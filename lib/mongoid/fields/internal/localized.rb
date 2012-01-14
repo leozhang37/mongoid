@@ -20,7 +20,7 @@ module Mongoid #:nodoc:
         # @since 2.3.0
         def deserialize(object)
           return nil if object.nil?
-          locale = ::I18n.locale
+          locale = ::I18n.respond_to?(:lang)? ::I18n.lang : ::I18n.locale
           if ::I18n.respond_to?(:fallbacks)
             object[::I18n.fallbacks[locale].map(&:to_s).find{ |loc| object[loc] }]
           else
@@ -54,7 +54,8 @@ module Mongoid #:nodoc:
         #
         # @since 2.3.0
         def serialize(object)
-          { ::I18n.locale.to_s => object.try(:to_s) }
+          locale = ::I18n.respond_to?(:lang)? ::I18n.lang : ::I18n.locale
+          { locale.to_s => object.try(:to_s) }
         end
       end
     end
